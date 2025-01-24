@@ -2,7 +2,7 @@ import { IPhotos, IPost } from "../type";
 
 const BASE_URL = "https://jsonplaceholder.typicode.com";
 
-export const getPosts = async (q: string): Promise<any[]> => {
+export const getPosts = async (q: string) => {
     try {
         const [postsResponse, photosResponse] = await Promise.all([
             fetch(`${BASE_URL}/posts?title_like=${q}`),

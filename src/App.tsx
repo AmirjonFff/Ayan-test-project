@@ -4,11 +4,12 @@ import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { getPosts } from "./api/postsApi";
 import "./App.css";
-import { RootState } from "./app/store";
 import PrimarySearchAppBar from "./components/AppBar";
 import ActionAreaCard from "./components/Card";
-import { setCurrentPage } from "./features/blog/blogSlice";
+import { setCurrentPage } from "./redux/blog/blogSlice";
+import { RootState } from "./redux/store";
 import { IPost } from "./type";
+import { Box } from "@mui/material";
 
 function App() {
   const [posts, setPosts] = useState<IPost[]>([]);
@@ -26,8 +27,9 @@ function App() {
         setLoading(true);
         const data = await getPosts(query);
         setPosts(data);
-      } catch (err: any) {
-        setError(err.message || "Не удалось загрузить данные");
+      } catch (err) {
+        console.log(err);
+        setError("Не удалось загрузить данные");
       } finally {
         setLoading(false);
       }
@@ -52,13 +54,13 @@ function App() {
   return (
     <>
       <PrimarySearchAppBar />
-      <div style={{ maxWidth: "1300px", margin: "auto", padding: "20px" }}>
+      <Box sx={{ maxWidth: "1300px", margin: "auto", padding: "20px" }}>
         <Grid
           container
           gap={2}
           justifyContent={"space-evenly"}
           spacing={{ xs: 2, md: 1 }}
-          columns={{ xs: 1, sm: 8, md: 16 }}
+          columns={{ xs: 1, sm: 10, md: 13, lg: 16 }}
         >
           {loading ? 'Loading...' : currentPosts.map((post) => (
             <Grid key={post.id} size={{ xs: 1, sm: 3, md: 3 }}>
@@ -66,16 +68,14 @@ function App() {
             </Grid>
           ))}
         </Grid>
-
         <Pagination
-          sx={{ float: 'right', mt: 5 }}
+          sx={{ float: 'right', my: 5 }}
           count={totalPages}
           page={currentPage}
           onChange={handlePageChange}
           color="primary"
         />
-
-      </div >
+      </Box>
     </>
   );
 }
