@@ -7,7 +7,7 @@ import Toolbar from '@mui/material/Toolbar';
 import * as React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../app/store';
-import { setCurrentPage, setItemsPerPage } from '../features/blog/blogSlice';
+import { setCurrentPage, setItemsPerPage, setQuery } from '../features/blog/blogSlice';
 
 const Search = styled('div')(({ theme }) => ({
     position: 'relative',
@@ -38,12 +38,17 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 }));
 
 export default function PrimarySearchAppBar() {
-    React.useState<null | HTMLElement>(null);
 
+    const query = useSelector((state: RootState) => state.blog.query)
     const itemsPerPage = useSelector((state: RootState) => state.blog.itemsPerPage)
+
     const dispatch = useDispatch();
 
-    const handleItemsPerPageChange = (event: React.ChangeEvent<{ value: unknown }>) => {
+    const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        dispatch(setQuery(event.target.value));
+    };
+
+    const handleItemsPerPageChange = (event: React.ChangeEvent<{ value: number }>) => {
         dispatch(setItemsPerPage(event.target.value as number));
         dispatch(setCurrentPage(1));
     };
@@ -57,6 +62,8 @@ export default function PrimarySearchAppBar() {
                     </ImageListItem>
                     <Search>
                         <StyledInputBase
+                            onChange={handleSearchChange}
+                            value={query}
                             placeholder="Search…"
                             inputProps={{ 'aria-label': 'search' }}
                         />
@@ -65,7 +72,7 @@ export default function PrimarySearchAppBar() {
                     <Select
                         value={itemsPerPage}
                         onChange={handleItemsPerPageChange}
-                        style={{ marginRight: "20px", minWidth: "150px" }}
+                        sx={{ marginRight: "20px", minWidth: "150px" }}
                     >
                         <MenuItem value={10}>10 элементов</MenuItem>
                         <MenuItem value={20}>20 элементов</MenuItem>

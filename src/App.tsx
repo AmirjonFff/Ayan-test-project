@@ -1,21 +1,21 @@
 import Grid from "@mui/material/Grid2";
 import Pagination from "@mui/material/Pagination";
 import { useEffect, useState } from "react";
-import { fetchPosts } from "./api/postsApi";
-import "./App.css";
-import ActionAreaCard from "./components/Card";
-import { IPost } from "./type";
-import PrimarySearchAppBar from "./components/AppBar";
 import { useDispatch, useSelector } from "react-redux";
+import { getPosts } from "./api/postsApi";
+import "./App.css";
 import { RootState } from "./app/store";
+import PrimarySearchAppBar from "./components/AppBar";
+import ActionAreaCard from "./components/Card";
 import { setCurrentPage } from "./features/blog/blogSlice";
-import CustomizedDialogs from "./components/Modal";
+import { IPost } from "./type";
 
 function App() {
   const [posts, setPosts] = useState<IPost[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
+  const query = useSelector((state: RootState) => state.blog.query)
   const currentPage = useSelector((state: RootState) => state.blog.currentPage)
   const itemsPerPage = useSelector((state: RootState) => state.blog.itemsPerPage)
   const dispatch = useDispatch()
@@ -24,7 +24,7 @@ function App() {
     const loadPosts = async () => {
       try {
         setLoading(true);
-        const data = await fetchPosts();
+        const data = await getPosts(query);
         setPosts(data);
       } catch (err: any) {
         setError(err.message || "Не удалось загрузить данные");
@@ -34,9 +34,8 @@ function App() {
     };
 
     loadPosts();
-  }, []);
+  }, [query]);
 
-  if (loading) return <div>Загрузка...</div>;
   if (error) return <div>Ошибка: {error}</div>;
 
   const totalPages = Math.ceil(posts.length / itemsPerPage);
@@ -46,7 +45,7 @@ function App() {
     currentPage * itemsPerPage
   );
 
-  const handlePageChange = (event: React.ChangeEvent<unknown>, page: number) => {
+  const handlePageChange = (_: React.ChangeEvent<unknown>, page: number) => {
     dispatch(setCurrentPage(page));
   };
 
@@ -57,11 +56,11 @@ function App() {
         <Grid
           container
           gap={2}
-          justifyContent={"space-between"}
+          justifyContent={"space-evenly"}
           spacing={{ xs: 2, md: 1 }}
           columns={{ xs: 1, sm: 8, md: 16 }}
         >
-          {currentPosts.map((post) => (
+          {loading ? 'Loading...' : currentPosts.map((post) => (
             <Grid key={post.id} size={{ xs: 1, sm: 3, md: 3 }}>
               <ActionAreaCard {...post} />
             </Grid>
@@ -75,7 +74,7 @@ function App() {
           onChange={handlePageChange}
           color="primary"
         />
-        <CustomizedDialogs />
+
       </div >
     </>
   );

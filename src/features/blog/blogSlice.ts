@@ -1,14 +1,17 @@
 import { createSlice } from '@reduxjs/toolkit'
 import type { PayloadAction } from '@reduxjs/toolkit'
+import { IPost } from '../../type';
 
 export interface BlogState {
-    value: number,
+    query: string;
+    modalPost: IPost | {};
     currentPage: number;
     itemsPerPage: number;
 }
 
 const initialState: BlogState = {
-    value: 0,
+    query: '',
+    modalPost: {},
     currentPage: 1,
     itemsPerPage: 10,
 }
@@ -17,6 +20,12 @@ export const blogSlice = createSlice({
     name: 'blog',
     initialState,
     reducers: {
+        setQuery(state, action: PayloadAction<string>) {
+            state.query = action.payload;
+        },
+        setModalPost(state, action: PayloadAction<IPost>) {
+            state.modalPost = action.payload;
+        },
         setCurrentPage(state, action: PayloadAction<number>) {
             state.currentPage = action.payload;
         },
@@ -24,18 +33,9 @@ export const blogSlice = createSlice({
             state.itemsPerPage = action.payload;
             state.currentPage = 1;
         },
-        increment: (state) => {
-            state.value += 1
-        },
-        decrement: (state) => {
-            state.value -= 1
-        },
-        incrementByAmount: (state, action: PayloadAction<number>) => {
-            state.value += action.payload
-        },
     },
 })
 
-export const { setCurrentPage, setItemsPerPage, increment, decrement, incrementByAmount } = blogSlice.actions
+export const { setQuery, setModalPost, setCurrentPage, setItemsPerPage } = blogSlice.actions
 
 export default blogSlice.reducer

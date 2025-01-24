@@ -7,6 +7,8 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogActions from '@mui/material/DialogActions';
 import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
+import { IPost } from '../type';
+import { ImageListItem } from '@mui/material';
 
 const BootstrapDialog = styled(Dialog)(({ theme }) => ({
     '& .MuiDialogContent-root': {
@@ -17,7 +19,7 @@ const BootstrapDialog = styled(Dialog)(({ theme }) => ({
     },
 }));
 
-export default function CustomizedDialogs() {
+export default function CustomizedDialogs({ title, body, imageUrl }: IPost & { imageUrl?: string }) {
     const [open, setOpen] = React.useState(false);
 
     const handleClickOpen = () => {
@@ -29,8 +31,8 @@ export default function CustomizedDialogs() {
 
     return (
         <React.Fragment>
-            <Button variant="outlined" onClick={handleClickOpen}>
-                Open dialog
+            <Button size="small" color="primary" onClick={handleClickOpen}>
+                More
             </Button>
             <BootstrapDialog
                 onClose={handleClose}
@@ -38,7 +40,7 @@ export default function CustomizedDialogs() {
                 open={open}
             >
                 <DialogTitle sx={{ m: 0, p: 2 }} id="customized-dialog-title">
-                    Modal title
+                    More information
                 </DialogTitle>
                 <IconButton
                     aria-label="close"
@@ -53,24 +55,19 @@ export default function CustomizedDialogs() {
                     x
                 </IconButton>
                 <DialogContent dividers>
-                    <Typography gutterBottom>
-                        Cras mattis consectetur purus sit amet fermentum. Cras justo odio,
-                        dapibus ac facilisis in, egestas eget quam. Morbi leo risus, porta ac
-                        consectetur ac, vestibulum at eros.
+                    <ImageListItem>
+                        <img src={imageUrl} alt="" />
+                    </ImageListItem>
+                    <Typography variant='h5' gutterBottom>
+                        {title}
                     </Typography>
                     <Typography gutterBottom>
-                        Praesent commodo cursus magna, vel scelerisque nisl consectetur et.
-                        Vivamus sagittis lacus vel augue laoreet rutrum faucibus dolor auctor.
-                    </Typography>
-                    <Typography gutterBottom>
-                        Aenean lacinia bibendum nulla sed consectetur. Praesent commodo cursus
-                        magna, vel scelerisque nisl consectetur et. Donec sed odio dui. Donec
-                        ullamcorper nulla non metus auctor fringilla.
+                        {body}
                     </Typography>
                 </DialogContent>
                 <DialogActions>
                     <Button autoFocus onClick={handleClose}>
-                        Save changes
+                        Close
                     </Button>
                 </DialogActions>
             </BootstrapDialog>
